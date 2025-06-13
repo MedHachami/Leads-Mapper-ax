@@ -13,10 +13,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Upload, Download, FileText, Settings, Eye, Trash2, AlertCircle, Filter } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+<<<<<<< HEAD
 import { Input } from "@/components/ui/input"
 import * as XLSX from "xlsx"
 
 
+=======
+import * as XLSX from "xlsx"
+
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
 interface FileData {
   name: string
   headers: string[]
@@ -51,8 +56,11 @@ interface FilterOptions {
   onlyPortableNumbers: boolean
   removeInvalidPostalCodes: boolean
   removeNullPhones: boolean
+<<<<<<< HEAD
   removeEmptyNames: boolean
   filterByPostalCode: boolean
+=======
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
 }
 
 interface FilterStats {
@@ -75,12 +83,16 @@ export default function ExcelCSVMapper() {
     onlyPortableNumbers: true,
     removeInvalidPostalCodes: true,
     removeNullPhones: true,
+<<<<<<< HEAD
     removeEmptyNames: true,
     filterByPostalCode: false,
   })
   const [allowedPostalCodes, setAllowedPostalCodes] = useState<string>("")
   const [splitIntoFiles, setSplitIntoFiles] = useState<boolean>(true)
   const [recordsPerFile, setRecordsPerFile] = useState<number>(8000)
+=======
+  })
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
   const [filterStats, setFilterStats] = useState<FilterStats>({
     totalRecords: 0,
     filteredRecords: 0,
@@ -147,6 +159,7 @@ export default function ExcelCSVMapper() {
   }
 
   // Excel parser using SheetJS
+<<<<<<< HEAD
   const parseExcel = async (
     file: File,
   ): Promise<{ sheets: { [key: string]: { headers: string[]; rows: string[][] } } }> => {
@@ -174,6 +187,33 @@ export default function ExcelCSVMapper() {
 
     return { sheets }
   }
+=======
+ const parseExcel = async (
+  file: File,
+): Promise<{ sheets: { [key: string]: { headers: string[]; rows: string[][] } } }> => {
+  const arrayBuffer = await file.arrayBuffer();
+  const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+  const sheets: { [key: string]: { headers: string[]; rows: string[][] } } = {};
+
+  workbook.SheetNames.forEach((sheetName) => {
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" }) as string[][];
+
+    if (jsonData.length > 0) {
+      const headers = jsonData[0].map((h) => String(h || "").trim());
+      const rows = jsonData
+        .slice(1)
+        .filter((row) => row.some((cell) => String(cell || "").trim()))
+        .map((row) => row.map((cell) => String(cell || "").trim()));
+
+      sheets[sheetName] = { headers, rows };
+    }
+  });
+
+  return { sheets };
+};
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
 
   // Clean and format phone numbers
   const cleanPhoneNumber = (phone: string): string => {
@@ -225,6 +265,7 @@ export default function ExcelCSVMapper() {
     return phone.trim() !== ""
   }
 
+<<<<<<< HEAD
   const isNameNotEmpty = (name: string): boolean => {
     return name.trim() !== ""
   }
@@ -234,6 +275,8 @@ export default function ExcelCSVMapper() {
     return allowedCodes.some((code) => postalCode.startsWith(code.trim()))
   }
 
+=======
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
   const applyFilters = (data: ExtractedRecord[]): { filtered: ExtractedRecord[]; stats: FilterStats } => {
     let filtered = [...data]
     const stats: FilterStats = {
@@ -244,18 +287,25 @@ export default function ExcelCSVMapper() {
       removedByNullPhoneFilter: 0,
     }
 
+<<<<<<< HEAD
     // Filter: Remove null/empty phone numbers
+=======
+    // Filter 3: Remove null/empty phone numbers (do this first)
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
     if (filterOptions.removeNullPhones) {
       const beforeCount = filtered.length
       filtered = filtered.filter((record) => isPhoneNotNull(record.phone))
       stats.removedByNullPhoneFilter = beforeCount - filtered.length
     }
 
+<<<<<<< HEAD
     // Filter: Remove empty names
     if (filterOptions.removeEmptyNames) {
       filtered = filtered.filter((record) => isNameNotEmpty(record.name))
     }
 
+=======
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
     // Filter 1: Only portable numbers (06/07)
     if (filterOptions.onlyPortableNumbers) {
       const beforeCount = filtered.length
@@ -270,6 +320,7 @@ export default function ExcelCSVMapper() {
       stats.removedByPostalCodeFilter = beforeCount - filtered.length
     }
 
+<<<<<<< HEAD
     // Filter: Keep only specific postal codes
     if (filterOptions.filterByPostalCode && allowedPostalCodes.trim()) {
       const allowedCodes = allowedPostalCodes
@@ -280,6 +331,10 @@ export default function ExcelCSVMapper() {
     }
 
     stats.filteredRecords = filtered.length
+=======
+    stats.filteredRecords = filtered.length
+
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
     return { filtered, stats }
   }
 
@@ -513,6 +568,7 @@ export default function ExcelCSVMapper() {
     URL.revokeObjectURL(url)
   }
 
+<<<<<<< HEAD
   const downloadMultipleCSV = () => {
     const dataToDownload = filteredData.length > 0 ? filteredData : extractedData
     if (dataToDownload.length === 0) return
@@ -559,6 +615,8 @@ export default function ExcelCSVMapper() {
     })
   }
 
+=======
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
   const resetProcess = () => {
     setUploadedFiles([])
     setFieldMappings({})
@@ -891,7 +949,11 @@ export default function ExcelCSVMapper() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+<<<<<<< HEAD
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+=======
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
                 {/* Filter 1: Portable Numbers */}
                 <Card>
                   <CardHeader>
@@ -972,6 +1034,7 @@ export default function ExcelCSVMapper() {
                     </div>
                   </CardContent>
                 </Card>
+<<<<<<< HEAD
 
                 {/* Filter 4: Empty Names */}
                 <Card>
@@ -1063,6 +1126,10 @@ export default function ExcelCSVMapper() {
                 </CardContent>
               </Card>
 
+=======
+              </div>
+
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
               <div className="flex gap-4">
                 <Button onClick={applyFiltersAndProceed} className="flex items-center gap-2">
                   <Filter className="h-4 w-4" />
@@ -1094,12 +1161,18 @@ export default function ExcelCSVMapper() {
             </CardHeader>
             <CardContent>
               <div className="flex gap-4">
+<<<<<<< HEAD
                 <Button onClick={downloadMultipleCSV} className="flex items-center gap-2">
                   <Download className="h-4 w-4" />
                   {splitIntoFiles &&
                   (filteredData.length > 0 ? filteredData.length : extractedData.length) > recordsPerFile
                     ? `Download Multiple Files (${Math.ceil((filteredData.length > 0 ? filteredData.length : extractedData.length) / recordsPerFile)} files)`
                     : `Download CSV (${filteredData.length > 0 ? filteredData.length : extractedData.length} records)`}
+=======
+                <Button onClick={downloadCSV} className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Download CSV ({filteredData.length > 0 ? filteredData.length : extractedData.length} records)
+>>>>>>> ca605e7c63d06053fa550fd916ef9848bb8684f0
                 </Button>
                 <Button variant="outline" onClick={resetProcess}>
                   Process New Files
